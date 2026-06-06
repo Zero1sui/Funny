@@ -91,6 +91,7 @@ import iad1tya.echo.music.constants.RotatingThumbnailKey
 import iad1tya.echo.music.constants.SeekExtraSeconds
 import iad1tya.echo.music.constants.SwipeThumbnailKey
 import iad1tya.echo.music.constants.ThumbnailCornerRadiusKey
+import iad1tya.echo.music.constants.TouchCoverToShowLyricsKey
 import iad1tya.echo.music.constants.ThumbnailCornerRadius
 import iad1tya.echo.music.listentogether.RoomRole
 import iad1tya.echo.music.ui.component.CastButton
@@ -258,6 +259,7 @@ fun Thumbnail(
     isPlayerExpanded: () -> Boolean = { true },
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,
+    onCoverTap: () -> Unit = {},
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -281,6 +283,7 @@ fun Thumbnail(
         defaultValue = PlayerBackgroundStyle.GRADIENT
     )
     val thumbnailCornerRadius by rememberPreference(ThumbnailCornerRadiusKey, defaultValue = 3f)
+    val touchCoverToShowLyrics by rememberPreference(TouchCoverToShowLyricsKey, defaultValue = false)
     
     
     val textBackgroundColor = getTextColor(playerBackground)
@@ -475,7 +478,8 @@ fun Thumbnail(
                                 isListenTogetherGuest = isListenTogetherGuest,
                                 currentMediaId = mediaMetadata?.id,
                                 currentMediaThumbnail = mediaMetadata?.thumbnailUrl,
-                                playerBackground = playerBackground
+                                playerBackground = playerBackground,
+                                onCoverTap = if (touchCoverToShowLyrics && item.mediaId == mediaMetadata?.id) onCoverTap else null
                             )
                         }
                     }
@@ -584,6 +588,7 @@ private fun ThumbnailItem(
     currentMediaId: String? = null,
     currentMediaThumbnail: String? = null,
     playerBackground: PlayerBackgroundStyle = PlayerBackgroundStyle.DEFAULT,
+    onCoverTap: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val rotatingThumbnail by rememberPreference(RotatingThumbnailKey, defaultValue = false)
@@ -623,8 +628,13 @@ private fun ThumbnailItem(
                 
                 
             }
-            .pointerInput(Unit) {
+            .pointerInput(onCoverTap, isListenTogetherGuest) {
                 detectTapGestures(
+                    onTap = {
+                        if (!isListenTogetherGuest) {
+                            onCoverTap?.invoke()
+                        }
+                    },
                     onDoubleTap = { offset ->
                         if (isListenTogetherGuest) return@detectTapGestures
 

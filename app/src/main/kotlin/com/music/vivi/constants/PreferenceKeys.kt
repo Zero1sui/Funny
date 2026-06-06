@@ -424,6 +424,7 @@ val MiniPlayerBackgroundStyleKey = stringPreferencesKey("miniPlayerBackgroundSty
 val ShowLyricsKey = booleanPreferencesKey("showLyrics")
 val SwipeLyricsKey = booleanPreferencesKey("swipeLyrics")
 val EnableLyricsThumbnailPlayPauseKey = booleanPreferencesKey("enableLyricsThumbnailPlayPause")
+val TouchCoverToShowLyricsKey = booleanPreferencesKey("touchCoverToShowLyrics")
 val LyricsTextPositionKey = stringPreferencesKey("lyricsTextPosition")
 val LyricsClickKey = booleanPreferencesKey("lyricsClick")
 val LyricsScrollKey = booleanPreferencesKey("lyricsScrollKey")

@@ -2537,7 +2537,8 @@ fun BottomSheetPlayer(
                                     modifier = Modifier.animateContentSize(),
                                     isPlayerExpanded = isExpandedProvider,
                                     isLandscape = true,
-                                    isListenTogetherGuest = isListenTogetherGuest
+                                    isListenTogetherGuest = isListenTogetherGuest,
+                                    onCoverTap = { showInlineLyrics = true }
                                 )
                             }
                         }
@@ -2600,7 +2601,8 @@ fun BottomSheetPlayer(
                                     sliderPositionProvider = sliderPositionProvider,
                                     modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
                                     isPlayerExpanded = isExpandedProvider,
-                                    isListenTogetherGuest = isListenTogetherGuest
+                                    isListenTogetherGuest = isListenTogetherGuest,
+                                    onCoverTap = { showInlineLyrics = true }
                                 )
                             }
                         }

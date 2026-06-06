@@ -24,7 +24,7 @@ if (hasGoogleServicesConfig) {
 }
 
 android {
-    namespace = "iad1tya.echo.music"
+    namespace = "zero1sui.echo.music"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 

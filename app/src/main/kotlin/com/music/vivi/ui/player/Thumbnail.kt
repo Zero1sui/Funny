@@ -51,6 +51,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,6 +93,7 @@ import iad1tya.echo.music.constants.SeekExtraSeconds
 import iad1tya.echo.music.constants.SwipeThumbnailKey
 import iad1tya.echo.music.constants.ThumbnailCornerRadiusKey
 import iad1tya.echo.music.constants.ThumbnailCornerRadius
+import iad1tya.echo.music.constants.TouchCoverToShowLyricsKey
 import iad1tya.echo.music.listentogether.RoomRole
 import iad1tya.echo.music.ui.component.CastButton
 import iad1tya.echo.music.utils.rememberEnumPreference
@@ -258,6 +260,7 @@ fun Thumbnail(
     isPlayerExpanded: () -> Boolean = { true },
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,
+    onShowLyrics: () -> Unit = {},
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -281,6 +284,7 @@ fun Thumbnail(
         defaultValue = PlayerBackgroundStyle.GRADIENT
     )
     val thumbnailCornerRadius by rememberPreference(ThumbnailCornerRadiusKey, defaultValue = 3f)
+    val touchCoverToShowLyrics by rememberPreference(TouchCoverToShowLyricsKey, defaultValue = false)
     
     
     val textBackgroundColor = getTextColor(playerBackground)
@@ -475,7 +479,10 @@ fun Thumbnail(
                                 isListenTogetherGuest = isListenTogetherGuest,
                                 currentMediaId = mediaMetadata?.id,
                                 currentMediaThumbnail = mediaMetadata?.thumbnailUrl,
-                                playerBackground = playerBackground
+                                playerBackground = playerBackground,
+                                touchCoverToShowLyrics = touchCoverToShowLyrics,
+                                isPlayerExpanded = isPlayerExpanded(),
+                                onShowLyrics = onShowLyrics
                             )
                         }
                     }
@@ -584,9 +591,13 @@ private fun ThumbnailItem(
     currentMediaId: String? = null,
     currentMediaThumbnail: String? = null,
     playerBackground: PlayerBackgroundStyle = PlayerBackgroundStyle.DEFAULT,
+    touchCoverToShowLyrics: Boolean = false,
+    isPlayerExpanded: Boolean = true,
+    onShowLyrics: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val rotatingThumbnail by rememberPreference(RotatingThumbnailKey, defaultValue = false)
+    val currentOnShowLyrics by rememberUpdatedState(onShowLyrics)
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val isCurrentItem = item.mediaId == currentMediaId
     
@@ -623,8 +634,13 @@ private fun ThumbnailItem(
                 
                 
             }
-            .pointerInput(Unit) {
+            .pointerInput(Triple(touchCoverToShowLyrics, isCurrentItem, isPlayerExpanded)) {
                 detectTapGestures(
+                    onTap = {
+                        if (touchCoverToShowLyrics && isCurrentItem && isPlayerExpanded) {
+                            currentOnShowLyrics()
+                        }
+                    },
                     onDoubleTap = { offset ->
                         if (isListenTogetherGuest) return@detectTapGestures
 

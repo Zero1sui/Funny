@@ -100,6 +100,7 @@ import iad1tya.echo.music.constants.SwipeLyricsKey
 import iad1tya.echo.music.constants.SwipeToRemoveSongKey
 import iad1tya.echo.music.constants.SwipeToSongKey
 import iad1tya.echo.music.constants.ThumbnailCornerRadiusKey
+import iad1tya.echo.music.constants.TouchCoverToShowLyricsKey
 
 import iad1tya.echo.music.constants.UseNewPlayerDesignKey
 import iad1tya.echo.music.ui.component.ThumbnailCornerRadiusModal
@@ -233,6 +234,7 @@ fun AppearanceSettings(
     val (appleMusicLyricsBlur, onAppleMusicLyricsBlurChange) = rememberPreference(AppleMusicLyricsBlurKey, defaultValue = true)
     val (lyricsStandardBlur, onLyricsStandardBlurChange) = rememberPreference(LyricsStandardBlurKey, defaultValue = false)
     val (swipeLyrics, onSwipeLyricsChange) = rememberPreference(SwipeLyricsKey, defaultValue = false)
+    val (touchCoverToShowLyrics, onTouchCoverToShowLyricsChange) = rememberPreference(TouchCoverToShowLyricsKey, defaultValue = false)
     val (enableLyricsThumbnailPlayPause, onEnableLyricsThumbnailPlayPauseChange) = rememberPreference(EnableLyricsThumbnailPlayPauseKey, defaultValue = false)
 
     val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(
@@ -1610,6 +1612,27 @@ fun AppearanceSettings(
                         )
                     },
                     onClick = { onLyricsScrollChange(!lyricsScroll) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
+                    title = { Text(stringResource(R.string.touch_cover_to_show_lyrics)) },
+                    description = { Text(stringResource(R.string.touch_cover_to_show_lyrics_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = touchCoverToShowLyrics,
+                            onCheckedChange = onTouchCoverToShowLyricsChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (touchCoverToShowLyrics) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onTouchCoverToShowLyricsChange(!touchCoverToShowLyrics) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.swipe),
